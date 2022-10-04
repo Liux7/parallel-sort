@@ -1,6 +1,6 @@
 #include<iostream>
 using namespace std;
-void bitonicMerge(int* a, int n, bool direction)
+void bitonicMerge(float* a, int n, bool direction)
 {
     if(n > 1)
     {
@@ -18,7 +18,8 @@ void bitonicMerge(int* a, int n, bool direction)
 }
 
 
-void bitonicSort(int* a, int n, bool direction)
+
+void bitonicSort(float* a, int n, bool direction = true)
 {
     if(n > 1)
     {
@@ -26,18 +27,4 @@ void bitonicSort(int* a, int n, bool direction)
     bitonicSort(a + n/2, n/2, !direction);
     bitonicMerge(a, n, direction);
     }
-}
-
-int main()
-{
-    int n = 16;
-    int a[16] = {10, 20, 9, 5, 3, 8, 12, 14, 90, 0, 60, 40, 23, 35, 95, 18};
-    
-    bitonicSort(a, n, true);
-    for (int i = 0; i < n; i++)
-    {
-        cout << a[i] <<" ";
-    }
-    
-
 }

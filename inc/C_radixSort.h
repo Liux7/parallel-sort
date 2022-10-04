@@ -13,7 +13,7 @@ inline int GetDigitInPos(int num,int pos)
     return (num / temp) % 10;  
 }
 
-inline void RadixSort(int* unorderArray, int dataNum)  
+void RadixSort(int* unorderArray, int dataNum)  
 {  
     int *radixArrays[RADIX]; 
     for (int i=0; i<10; i++) 
@@ -39,27 +39,3 @@ inline void RadixSort(int* unorderArray, int dataNum)
 } 
 
 
-int main()
-{
-    int n = 100;
-    srand(seed);
-    int *array = (int*)malloc(sizeof(int)*n);
-    for (int i = 0; i < n; i++)
-    {
-        array[i] = rand() % 100;
-    }
-    RadixSort(array, n);
-
-    int flag = 0;
-    for(int i = 1; i < n; i++)
-    {
-        if(array[i-1] > array[i]) 
-        {
-            flag  = 1;
-            break;
-        }
-    }
-    if(flag) printf("fail\n");
-    else printf("success\n");
-    
-}

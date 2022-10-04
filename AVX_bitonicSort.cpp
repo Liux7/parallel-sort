@@ -62,8 +62,8 @@ void profile_small(int array_size)
     }
     
     float bitonic_duration = (float)stm_sec(diff);
-    printf("%f\n",stl_duration/bitonic_duration);
-    //printf("%f times faster for %2d elements\n", stl_duration/bitonic_duration, array_size);
+    // printf("%f\n",stl_duration/bitonic_duration);
+    printf("%f times faster for %2d elements\n", stl_duration/bitonic_duration, array_size);
 }
 
 void check_correctness(int array_size)
