@@ -1,12 +1,15 @@
 inc = -I./inc
-flag = -mavx -o3
+avxflag = -mavx -o3
+ompflag = -fopenmp
 avxbs:
-	g++ $(inc) $(flag) AVX_bitonicSort.cpp -o avxbs
+	g++ $(inc) $(avxflag) AVX_bitonicSort.cpp -o avxbs
 cbs:
 	g++ C_bitonicSort.cpp -o cbs
 crs:
 	g++ C_radixSort.cpp -o crs
 test:
-	g++ $(inc) $(flag) test.cpp -o test
+	g++ $(inc) $(avxflag) test.cpp -o test
+omptest:
+	g++ $(inc) $(avxflag) $(ompflag) test.cpp -o omptest
 clean:
 	rm *.exe
