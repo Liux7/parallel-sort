@@ -6,4 +6,4 @@
 
 测试了最初搬版本的性能：
 
-![](.\perf\Figure_1.png)
+![](./perf/Figure_1.png)
