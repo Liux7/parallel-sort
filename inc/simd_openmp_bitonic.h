@@ -1,5 +1,6 @@
-
-
+#include <stdio.h>
+#include <algorithm>
+#include <omp.h>
 /*
 To use this library, do this in *one* C or C++ file:
     #define __SIMD_BITONIC_IMPLEMENTATION__
@@ -856,12 +857,13 @@ static inline void simd_sort_24V(simd_vector* a, simd_vector* b, simd_vector* c,
 //----------------------------------------------------------------------------------------------------------------------
 int simd_small_sort_max()
 {
-    return SIMD_VECTOR_WIDTH * 24;
+    return SIMD_VECTOR_WIDTH * 24; // 8*24= 192
 }
 
 //----------------------------------------------------------------------------------------------------------------------
 void simd_small_sort(float* array, int element_count)
 {
+    printf("in simd_small_sort\n");
     if (element_count <= 1)
         return;
     
@@ -877,6 +879,7 @@ void simd_small_sort(float* array, int element_count)
     if (last_vec_size)
         data[full_vec_count] = simd_load_partial(array, full_vec_count, last_vec_size);
     
+    printf("in simd_small_sort2\n");
     if (element_count <= SIMD_VECTOR_WIDTH)
     {
         data[0] = simd_sort_1V(data[0]);
@@ -1117,5 +1120,66 @@ void simd_merge_sort(float* array, int element_count)
     }
 }
 
+void thread2_simd_merge_sort(float* array, int size)
+{
+    int left = 0, right = size - 1;
+
+    int middle, middle2;
+    
+
+    
+    middle = left + (right - left) / 2;    
+    middle2 = middle;
+    
+    // std::sort(array, array + middle + 1);
+    // std::sort(array + middle + 1, array + size);
+
+    // simd_small_sort(array, size/2);
+    // simd_small_sort(array+size/2, size/2);
+
+    // merge_sort(array, left, middle);
+    // merge_sort(array, middle + 1, right);
+
+    #pragma omp parallel sections
+    {
+    #pragma omp section
+    {
+        simd_small_sort(array, size/2);
+        // std::sort(array, array + middle + 1);
+        // merge_sort(array, left, middle);
+    }
+    #pragma omp section
+    {
+        simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, middle2 + 1, right);
+        // std::sort(array + middle + 1, array + size);
+    }
+    
+    }
+
+
+    // int tid;
+    // // printf("in 2thread\n");
+    // #pragma omp parallel num_threads(2)
+    // {
+    //     tid = omp_get_thread_num();
+    //     if(tid == 0)
+    //     {
+    //         // printf("msL");
+    //         // merge_sort(array, left, middle);
+    //         std::sort(array + left, array + middle);
+    //     }
+    //     if(tid == 1)
+    //     {
+    //         std::sort(array + middle2 + 1, array + right);
+    //         // printf("msR");
+    //         //merge_sort(array, middle2 + 1, right);
+
+    //     }
+    // }
+    printf("out\n");
+    merge_arrays(array, left, middle, right);
+    
+}
 #endif
 #endif

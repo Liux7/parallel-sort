@@ -62,6 +62,21 @@ int main(int argc, char** argv)
     // }
     // float stl_duration = (float)stm_sec(diff);
     
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        
+        thread2_simd_merge_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);    
+
+        if(!verify(array, array_size)) printf("2fail\n");
+    }
+    float thread2 = (float)stm_sec(diff); 
+    
     
     diff = 0;
     seed = 0x12345678;
@@ -73,8 +88,12 @@ int main(int argc, char** argv)
         simd_merge_sort(array, array_size);
         // simd_small_sort(array, array_size);
         diff += stm_diff(stm_now(), start_time);    
+
+        if(!verify(array, array_size)) printf("fail\n");
     }
     float simd_duration = (float)stm_sec(diff); 
+
+
 
     
     
@@ -96,10 +115,14 @@ int main(int argc, char** argv)
     // printf("%f ",bitonic_duration/stl_duration);
     // printf("%f ",bitonic_duration/simd_duration);
     // printf("%f\n",bitonic_duration/bitonic_duration);
-    printf("%f sec ",simd_duration);
+    printf("1t %f sec \n",simd_duration);
+
     
 
-    if(!verify(array, array_size)) printf("fail\n");
+    printf("2t %f sec ",thread2);
+    
+
+    
     // else printf("success\n");
     
 
