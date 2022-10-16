@@ -7,3 +7,7 @@
 测试了最初搬版本的性能：
 
 ![](./perf/Figure_1.png)
+
+通过openmp使用了不同的线程：
+
+![](./perf/Figure_2.png)
