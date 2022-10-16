@@ -1,6 +1,6 @@
-set i=1
+set i=100
 :L1
 echo %i% 
-..\test.exe %i% >> res.txt
-set /a i=(%i%)*2
-if %i% LEQ 2048 goto L1
+..\bin\omptest.exe %i% >> res.txt
+set /a i=(%i%)*10
+if %i% LEQ 10000000 goto L1

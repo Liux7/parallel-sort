@@ -16,7 +16,7 @@
 #include "random.h"
 int seed = 0x12345678;
 
-#define NUMBER_OF_SORTS (1000)
+#define NUMBER_OF_SORTS (100)
 #define MAX_ARRAY_SIZE (SIMD_VECTOR_WIDTH * 32)
 void initArray(float* array, int array_size)
 {
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
         // simd_small_sort(array, array_size);
         diff += stm_diff(stm_now(), start_time);    
 
-        if(!verify(array, array_size)) printf("fail\n");
+        if(!verify(array, array_size)) printf("1fail\n");
     }
     float simd_duration = (float)stm_sec(diff); 
 
@@ -97,32 +97,52 @@ int main(int argc, char** argv)
 
     
     
-    // diff = 0;
-    // seed = 0x12345678;
-    // for (int i = 0; i < NUMBER_OF_SORTS; i++)
-    // {
-    //     for(int j=0; j<array_size; ++j)
-    //         array[j] = iq_random_float(&seed);
-    //     start_time = stm_now();
-    //     bitonicSort(array, array_size, true);
-    //     // simd_small_sort(array, array_size);
-    //     diff += stm_diff(stm_now(), start_time);    
-    // }
-    // float bitonic_duration = (float)stm_sec(diff); 
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        thread4_simd_merge_sort(array, array_size);
+        
+        // simd_small_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);   
+
+        if(!verify(array, array_size)) printf("4fail\n");
+    }
+    float thread4 = (float)stm_sec(diff); 
     
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        thread8_simd_merge_sort(array, array_size);
+        
+        // simd_small_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);   
+
+        if(!verify(array, array_size)) printf("8fail\n");
+    }
+    float thread8 = (float)stm_sec(diff); 
     
     
     // printf("%f ",bitonic_duration/stl_duration);
     // printf("%f ",bitonic_duration/simd_duration);
-    // printf("%f\n",bitonic_duration/bitonic_duration);
-    printf("1t %f sec \n",simd_duration);
-
+    // printf("1t %f sec \n",simd_duration);
+    // printf("2t %f sec \n",thread2);
+    // printf("4t %f sec \n",thread4);
+    // printf("8t %f sec \n",thread8);
     
+    printf("%f ",simd_duration/simd_duration);
+    printf("%f ",simd_duration/thread2);
+    printf("%f ",simd_duration/thread4);
+    printf("%f ",simd_duration/thread8);
+    printf("\n");
 
-    printf("2t %f sec ",thread2);
-    
-
-    
     // else printf("success\n");
     
 

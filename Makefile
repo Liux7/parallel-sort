@@ -1,7 +1,7 @@
 inc = -I./inc
 bin = ./bin
 src = ./src
-avxflag = -mavx -o3
+avxflag = -mavx 
 ompflag = -fopenmp
 
 avxbs:
