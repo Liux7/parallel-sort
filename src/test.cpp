@@ -16,7 +16,7 @@
 #include "random.h"
 int seed = 0x12345678;
 
-#define NUMBER_OF_SORTS (100)
+#define NUMBER_OF_SORTS (1000)
 #define MAX_ARRAY_SIZE (SIMD_VECTOR_WIDTH * 32)
 void initArray(float* array, int array_size)
 {
@@ -70,7 +70,8 @@ int main(int argc, char** argv)
             array[j] = iq_random_float(&seed);
         start_time = stm_now();
         
-        thread2_simd_merge_sort(array, array_size);
+        thread2_std_sort(array, array_size);
+        // thread2_simd_merge_sort(array, array_size);
         diff += stm_diff(stm_now(), start_time);    
 
         if(!verify(array, array_size)) printf("2fail\n");
@@ -85,7 +86,8 @@ int main(int argc, char** argv)
         for(int j=0; j<array_size; ++j)
             array[j] = iq_random_float(&seed);
         start_time = stm_now();
-        simd_merge_sort(array, array_size);
+        // simd_merge_sort(array, array_size);
+        std::sort(array, array + array_size);
         // simd_small_sort(array, array_size);
         diff += stm_diff(stm_now(), start_time);    
 
@@ -104,7 +106,8 @@ int main(int argc, char** argv)
         for(int j=0; j<array_size; ++j)
             array[j] = iq_random_float(&seed);
         start_time = stm_now();
-        thread4_simd_merge_sort(array, array_size);
+        // thread4_simd_merge_sort(array, array_size);
+        thread4_std_sort(array, array_size);
         
         // simd_small_sort(array, array_size);
         diff += stm_diff(stm_now(), start_time);   
@@ -120,7 +123,8 @@ int main(int argc, char** argv)
         for(int j=0; j<array_size; ++j)
             array[j] = iq_random_float(&seed);
         start_time = stm_now();
-        thread8_simd_merge_sort(array, array_size);
+        // thread8_simd_merge_sort(array, array_size);
+        thread8_std_sort(array, array_size);
         
         // simd_small_sort(array, array_size);
         diff += stm_diff(stm_now(), start_time);   

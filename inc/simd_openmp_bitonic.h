@@ -1318,5 +1318,178 @@ void thread8_simd_merge_sort(float* array, int size)
 
     
 }
+void thread2_std_sort(float* array, int size)
+{
+    int left = 0, right = size - 1;
+
+    int middle, middle2;
+    
+    middle = left + (right - left) / 2;    
+    middle2 = middle;
+    
+    // std::sort(array, array + middle + 1);
+    // std::sort(array + middle + 1, array + size);
+
+    // simd_small_sort(array, size/2);
+    // simd_small_sort(array+size/2, size/2);
+
+    // merge_sort(array, left, middle);
+    // merge_sort(array, middle2 + 1, right);
+
+    #pragma omp parallel sections
+    {
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array+left, array + middle + 1);
+        // merge_sort(array, left, middle);
+
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, middle2 + 1, right);
+        std::sort(array + middle + 1, array + right+1);
+    }
+    
+    }
+    merge_arrays(array, left, middle, right);
+    
+}
+
+void thread4_std_sort(float* array, int size)
+{
+    int left = 0, right = size - 1;
+    int blocksize = size / 4;
+
+    #pragma omp parallel sections
+    {
+        
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array+left, array + blocksize);
+        // merge_sort(array, left, blocksize - 1); // [left, middle]
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, blocksize, 2*blocksize - 1);
+        std::sort(array + blocksize, array + 2*blocksize);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array + 2*blocksize, array + 3*blocksize);
+        // merge_sort(array, 2*blocksize, 3*blocksize-1);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, 3*blocksize, right);
+        std::sort(array + 3*blocksize, array + right + 1);
+    }
+    
+    }
+
+
+    #pragma omp parallel sections
+    {
+        #pragma omp section
+        merge_arrays(array, left, blocksize-1, 2*blocksize-1);
+
+        #pragma omp  section
+        merge_arrays(array, 2*blocksize,  3*blocksize - 1, right);
+    }
+
+    merge_arrays(array, left, 2*blocksize - 1, right);
+    
+}
+
+void thread8_std_sort(float* array, int size)
+{
+    int left = 0, right = size - 1;
+    int blocksize = size / 8;
+
+    #pragma omp parallel sections
+    {
+        
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array + left, array + blocksize);
+        // merge_sort(array, left, blocksize - 1); // [left, middle]
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, blocksize, 2*blocksize - 1);
+        std::sort(array + blocksize, array + 2*blocksize);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array + 2*blocksize, array + 3*blocksize);
+        // merge_sort(array, 2*blocksize, 3*blocksize-1);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, 3*blocksize, 4*blocksize-1);
+        std::sort(array + 3*blocksize, array + 4*blocksize);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array + 4*blocksize, array + 5*blocksize);
+        // merge_sort(array, 4*blocksize, 5*blocksize-1);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, 5*blocksize, 6*blocksize-1);
+        std::sort(array + 5*blocksize, array + 6*blocksize);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array, size/2);
+        std::sort(array + 6*blocksize,  array +7*blocksize);
+        // merge_sort(array, 6*blocksize, 7*blocksize-1);
+    }
+    #pragma omp section
+    {
+        // simd_small_sort(array+size/2, size/2);
+        // merge_sort(array, 7*blocksize, right);
+        std::sort(array+ 7*blocksize, array + right + 1);
+    }
+    
+    }
+
+    #pragma omp parallel sections
+    {
+        #pragma omp  section
+        merge_arrays(array, left, blocksize-1, 2*blocksize-1);
+
+        #pragma omp  section
+        merge_arrays(array, 2*blocksize,  3*blocksize - 1, 4*blocksize-1);
+    }
+
+    merge_arrays(array, left, 2*blocksize - 1, 4*blocksize-1);
+
+    #pragma omp parallel sections
+    {
+        #pragma omp  section
+        merge_arrays(array, 4*blocksize, 5*blocksize-1, 6*blocksize-1);
+
+        #pragma omp  section
+        merge_arrays(array, 6*blocksize,  7*blocksize - 1, right);
+
+    }
+    merge_arrays(array, 4*blocksize, 6*blocksize-1, right);
+
+    merge_arrays(array, left, 4*blocksize-1, right);
+
+    
+}
 #endif
 #endif

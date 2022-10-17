@@ -3,4 +3,4 @@ set i=100
 echo %i% 
 ..\bin\omptest.exe %i% >> res.txt
 set /a i=(%i%)*10
-if %i% LEQ 10000000 goto L1
+if %i% LEQ 1000000 goto L1
