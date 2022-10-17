@@ -40,6 +40,9 @@ bool verify(float* array, int size)
 
 int main(int argc, char** argv)
 {
+    
+
+
     int array_size = atoi(argv[1]);
     if(array_size == 0) 
     {
@@ -52,15 +55,6 @@ int main(int argc, char** argv)
     uint64_t start_time, diff = 0;
 
 
-    // for (int i = 0; i < NUMBER_OF_SORTS; i++)
-    // {
-    //     for(int j=0; j<array_size; ++j)
-    //         array[j] = iq_random_float(&seed);
-    //     start_time = stm_now();
-    //     std::sort(array, array + array_size);
-    //     diff += stm_diff(stm_now(), start_time);    
-    // }
-    // float stl_duration = (float)stm_sec(diff);
     
     diff = 0;
     seed = 0x12345678;
@@ -93,12 +87,8 @@ int main(int argc, char** argv)
 
         if(!verify(array, array_size)) printf("1fail\n");
     }
-    float simd_duration = (float)stm_sec(diff); 
+    float thread1 = (float)stm_sec(diff); 
 
-
-
-    
-    
     diff = 0;
     seed = 0x12345678;
     for (int i = 0; i < NUMBER_OF_SORTS; i++)
@@ -133,18 +123,92 @@ int main(int argc, char** argv)
     }
     float thread8 = (float)stm_sec(diff); 
     
+
     
-    // printf("%f ",bitonic_duration/stl_duration);
-    // printf("%f ",bitonic_duration/simd_duration);
-    // printf("1t %f sec \n",simd_duration);
-    // printf("2t %f sec \n",thread2);
-    // printf("4t %f sec \n",thread4);
-    // printf("8t %f sec \n",thread8);
+    //==========================================================//
+
     
-    printf("%f ",simd_duration/simd_duration);
-    printf("%f ",simd_duration/thread2);
-    printf("%f ",simd_duration/thread4);
-    printf("%f ",simd_duration/thread8);
+    
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        // simd_merge_sort(array, array_size);
+        bitonicSort(array, array_size);
+        // simd_small_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);    
+
+        if(!verify(array, array_size)) printf("1fail\n");
+    }
+    float thread1_bs = (float)stm_sec(diff); 
+
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        // thread8_simd_merge_sort(array, array_size);
+        thread2_bitonic_sort(array, array_size);
+        
+        // simd_small_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);   
+
+        if(!verify(array, array_size)) printf("8fail\n");
+    }
+    float thread2_bs = (float)stm_sec(diff); 
+
+
+
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        // thread4_simd_merge_sort(array, array_size);
+        thread4_bitonic_sort(array, array_size);
+        
+        // simd_small_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);   
+
+        if(!verify(array, array_size)) printf("4fail\n");
+    }
+    float thread4_bs = (float)stm_sec(diff); 
+    
+    diff = 0;
+    seed = 0x12345678;
+    for (int i = 0; i < NUMBER_OF_SORTS; i++)
+    {
+        for(int j=0; j<array_size; ++j)
+            array[j] = iq_random_float(&seed);
+        start_time = stm_now();
+        // thread8_simd_merge_sort(array, array_size);
+        thread8_std_sort(array, array_size);
+        
+        // simd_small_sort(array, array_size);
+        diff += stm_diff(stm_now(), start_time);   
+
+        if(!verify(array, array_size)) printf("8fail\n");
+    }
+    float thread8_bs = (float)stm_sec(diff); 
+    
+   
+
+
+
+
+
+
+    printf("%f ",thread1_bs/thread1);
+    printf("%f ",thread2_bs/thread2);
+    printf("%f ",thread4_bs/thread4);
+    printf("%f ",thread8_bs/thread8);
     printf("\n");
 
     // else printf("success\n");
