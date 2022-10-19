@@ -1,23 +1,23 @@
 import matplotlib.pyplot as plt
-x=[2, 3, 4, 5, 6]
+x=[10, 12, 14, 16, 18]
 
-y1=[1.000000,1.000000,1.000000,1.000000,1.000000]
-y2=[0.089349,1.037078,0.921321,1.620856,1.816637]
-y3=[0.078988,0.904297,2.626881,2.346511,2.196978]
-y4=[0.058646,0.711218,3.210093,2.024286,2.152120]
+y1=[3.041062,3.528270,2.822178,4.061632,3.804712]
+y2=[1.488200,3.728510,2.223396,3.101196,9.619101]
+y3=[1.660198,2.189551,2.720566,3.049943,2.871585]
+y4=[0.987527,0.890520,0.958986,0.933661,0.807668]
 
-# plt.ylim(1, 10)
+plt.ylim(1, 10)
 # plt.xlim(0, 8192)
 # plt.scatter(x1, y1)
 # plt.scatter(x2, y2)
 # plt.scatter(x3, y3)
-plt.title("no AVX performance(use std:sort)")
+plt.title("no AVX vs AVX bitonic sort")
 plt.plot(x,y1,label='thread = 1',)
 plt.plot(x,y2,label='thread = 2')
-plt.plot(x,y3,label='thread = 3')
-plt.plot(x,y4,label='thread = 4')
-plt.xlabel('array size 10^x')
-plt.ylabel('(time of sort)/(time of thread = 1)')
+plt.plot(x,y3,label='thread = 4')
+plt.plot(x,y4,label='thread = 8')
+plt.xlabel('array size 2^x')
+plt.ylabel('(time of sort)/(no AVX)')
 
 plt.legend()
 plt.show()
