@@ -16,7 +16,7 @@
 #include "random.h"
 int seed = 0x12345678;
 
-#define NUMBER_OF_SORTS (1000)
+#define NUMBER_OF_SORTS (100)
 #define MAX_ARRAY_SIZE (SIMD_VECTOR_WIDTH * 32)
 void initArray(float* array, int array_size)
 {
