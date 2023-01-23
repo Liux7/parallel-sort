@@ -11,3 +11,6 @@
 通过openmp使用了不同的线程：
 
 ![](./perf/Figure_2.png)
+
+https://www.cnblogs.com/walker-lin/p/11354687.html
+

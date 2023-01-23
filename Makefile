@@ -1,7 +1,7 @@
 inc = -I./inc
 bin = ./bin
 src = ./src
-avxflag = -mavx 
+avxflag = -mavx2 
 ompflag = -fopenmp
 
 avxbs:
@@ -14,5 +14,10 @@ test:
 	g++ $(inc) $(avxflag) $(src)/test.cpp -o $(bin)/test
 omptest:
 	g++ $(inc) $(avxflag) $(ompflag) $(src)/test.cpp -o $(bin)/omptest
+
+avxtest:
+	g++ $(avxflag) $(src)/avx.c -o $(bin)/test
+
+
 clean:
 	rm *.exe
